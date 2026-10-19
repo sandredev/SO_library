@@ -33,7 +33,7 @@ typedef struct
 typedef struct
 {
     size_t size;
-    shared_memory_t data;
+    shared_memory_t shmem_data;
 } ShmemVector;
 
 LocalVector create_local_vector(size_t size);

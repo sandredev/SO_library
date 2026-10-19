@@ -1,10 +1,16 @@
-# Build artifacts
+# Binarios y artefactos de compilación
 *.o
+*.obj
 *.out
+*.exe
+*.dSYM/
+a.out
 
-# Compiled binaries (no extension, produced by gcc -o)
+# Ejecutables generados
 file_reading/read-write
+file_reading/read-write.out
 
-# Editor / IDE
+# Entorno y editores
+.DS_Store
 *.swp
 *~

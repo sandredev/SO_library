@@ -100,7 +100,8 @@ int write_on_file_fprintf(FILE *file, bool reset_byte_indicator)
     return fprintf(file, "Hello world!\n");
 }
 
-// Unfinished function, it should read the file using fscanf and return the content as a string
+// Unfinished function, it should read the file using fscanf and return the content as a string.
+// Since this function is very algorithm-dependent, it should be implemented in the main program
 char *read_file_fscanf(FILE *file, bool reset_byte_indicator)
 {
     if (reset_byte_indicator)
@@ -174,16 +175,25 @@ LocalVector load_local_vector_from_file(FILE *file, bool reset_byte_indicator, b
     return vector;
 }
 
-void test()
+ShmemVector load_shmem_vector_from_file(FILE *file, bool reset_byte_indicator, bool is_first_number_size)
 {
-    FILE *file = load_file("hello_world.txt");
-    write_on_file_puts(file, "hello world!\n", true);
-    printf("Content of file:\n%s", read_file_fgets(file, true));
-    fclose(file);
-}
-
-int main()
-{
-    test();
-    return 0;
+    if (reset_byte_indicator)
+        fseek(file, 0, SEEK_SET);
+    size_t size;
+    if (is_first_number_size)
+    {
+        fscanf(file, "%zu", &size);
+    }
+    else
+    {
+        fseek(file, 0, SEEK_END);
+        size = ftell(file) / sizeof(int);
+        fseek(file, 0, SEEK_SET);
+    }
+    ShmemVector vector = create_shmem_vector(size);
+    for (size_t i = 0; i < size; i++)
+    {
+        fscanf(file, "%d", &vector.shmem_data.ptr[i]);
+    }
+    return vector;
 }

@@ -40,6 +40,6 @@ ShmemVector create_shmem_vector(size_t size)
     shared_memory_t shmem_data = get_shared_memory(size);
     ShmemVector shmem_vector = {
         .size = size,
-        .data = shmem_data};
+        .shmem_data = shmem_data};
     return shmem_vector;
 }
