@@ -1,0 +1,10 @@
+# Build artifacts
+*.o
+*.out
+
+# Compiled binaries (no extension, produced by gcc -o)
+file_reading/read-write
+
+# Editor / IDE
+*.swp
+*~
