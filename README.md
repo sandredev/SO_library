@@ -10,11 +10,11 @@ Colección de funciones prehechas en C para el curso de **Sistemas Operativos** 
 
 | Módulo | Archivos | Descripción |
 | --- | --- | --- |
-| `file_reading` | `read-write.c` | Apertura, lectura y escritura de archivos con `FILE*` (`fopen`, `fgets`, `fputs`, `fprintf`, `fscanf`). Incluye carga de matrices y vectores desde archivo. |
-| `matrix_vector_handling` | `matrix-vector.c`, `matrix-vector.h` | Estructuras y utilidades para matrices (`StaticMatrix`, `ShmemMatrix`) y vectores (`Vector`), tanto en memoria dinámica como en memoria compartida. |
+| `file_reading` | `read-write.c`, `read-write.h` | Apertura, lectura y escritura de archivos con `FILE*` (`fopen`, `fgets`, `fputs`, `fprintf`, `fscanf`). Incluye carga de matrices y vectores desde archivo. |
+| `matrix_vector_handling` | `matrix-vector.c`, `matrix-vector.h` | Estructuras y utilidades para matrices (`LocalMatrix`, `ShmemMatrix`) y vectores (`LocalVector`, `ShmemVector`), tanto en memoria dinámica como en memoria compartida. |
 | `fork_exec` | `fork-exec.c`, `fork-exec.h` | Envoltorio de `fork()` + `execv()` + `waitpid()` para crear y ejecutar procesos hijos, reportando su estado de salida. |
 | `pipes` | `pipes.c`, `pipes.h` | Creación y uso de tuberías (pipes) para comunicación entre procesos, con lectura/escritura de texto y de datos binarios. |
-| `shared_memory` | `shmem.c`, `shmem.h` | Reserva y liberación de memoria compartida System V (`shmget`, `shmat`, `shmdt`, `shmctl`) para enteros. |
+| `shared_memory` | `shmem.c`, `shmem.h` | Reserva y liberación de memoria compartida System V (`shmget`, `shmat`, `shmdt`, `shmctl`) para enteros, encapsulada en la estructura `shared_memory_t`. |
 | `signals` | `signal.c`, `signal.h` | Envoltorio de `kill()` que espera un instante antes de enviar la señal a un proceso. |
 
 Además, `.vscode/tasks.json` define una tarea de compilación con `gcc` para el archivo activo.
@@ -34,13 +34,20 @@ Además, `.vscode/tasks.json` define una tarea de compilación con `gcc` para el
 Cada módulo se compila junto con el archivo que lo utiliza. Por ejemplo:
 
 ```bash
-# Compilar el ejemplo de lectura/escritura de archivos
-gcc -g file_reading/read-write.c matrix_vector_handling/matrix-vector.c -o read-write
-./read-write
+# Compilar un programa propio que use lectura de archivos y matrices/vectores
+gcc -g mi_programa.c file_reading/read-write.c \
+    matrix_vector_handling/matrix-vector.c shared_memory/shmem.c \
+    -o mi_programa
 
 # Compilar un programa que use fork + exec
 gcc -g mi_programa.c fork_exec/fork-exec.c -o mi_programa
+
+# Compilar un programa que use pipes o señales
+gcc -g mi_programa.c pipes/pipes.c -o mi_programa
+gcc -g mi_programa.c signals/signal.c -o mi_programa
 ```
+
+> `file_reading/read-write.c` es un módulo, no un programa independiente: no define `main()`, así que debes compilarlo junto con tu propio archivo principal.
 
 En tus archivos fuente incluye el encabezado correspondiente:
 
@@ -57,9 +64,12 @@ En tus archivos fuente incluye el encabezado correspondiente:
 ```c
 #include "shared_memory/shmem.h"
 
-int* buffer = get_shared_memory(10); // 10 enteros
-buffer[0] = 42;
-free_shared_memory(buffer);
+shared_memory_t shm = get_shared_memory(10); // 10 enteros
+shm.ptr[0] = 42;
+
+// ... otros procesos pueden leer shm.ptr[0] si comparten el shmid ...
+
+free_shared_memory(shm.ptr, shm.shmid);
 ```
 
 ---
@@ -70,7 +80,8 @@ free_shared_memory(buffer);
 SO_library/
 ├── file_reading/
 │   ├── hello_world.txt
-│   └── read-write.c
+│   ├── read-write.c
+│   └── read-write.h
 ├── fork_exec/
 │   ├── fork-exec.c
 │   └── fork-exec.h
@@ -99,9 +110,9 @@ Este repositorio **no está terminado**. Puntos conocidos a revisar o completar:
 
 - `read_file_fscanf` en `file_reading/read-write.c` es un esbozo sin implementar.
 - `read_file_fgets` contiene lógica de crecimiento de buffer que debe revisarse.
-- `free_shared_memory` en `shared_memory/shmem.c` usa el puntero en lugar del `shmid` al llamar a `shmctl`.
 - `pipes/pipes.h` declara `fd` como variable global, lo que puede generar problemas de enlazado al incluirse en varios archivos.
-- Faltan ejemplos de uso y pruebas para varios módulos.
+- `load_shmem_vector_from_file` y otras funciones de carga aún requieren pruebas.
+- Faltan ejemplos de uso completos y pruebas para varios módulos.
 
 Las contribuciones y correcciones son bienvenidas.
 
