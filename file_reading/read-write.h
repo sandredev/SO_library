@@ -23,3 +23,5 @@ ShmemMatrix load_shmem_matrix_from_file(FILE *file, bool reset_byte_indicator, b
 
 ShmemVector load_shmem_vector_from_file(FILE *file, bool reset_byte_indicator, bool is_first_number_size);
 
+ShmemVector load_shmem_vector_from_file_size(FILE *file, bool reset_byte_indicator, size_t size);
+

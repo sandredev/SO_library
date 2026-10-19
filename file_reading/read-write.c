@@ -197,3 +197,15 @@ ShmemVector load_shmem_vector_from_file(FILE *file, bool reset_byte_indicator, b
     }
     return vector;
 }
+
+ShmemVector load_shmem_vector_from_file_size(FILE *file, bool reset_byte_indicator, size_t size) {
+    if (reset_byte_indicator)
+        fseek(file, 0, SEEK_SET);
+    size_t actual_size = size;
+    ShmemVector vector = create_shmem_vector(size);
+    for (size_t i = 0; i < size; i++)
+    {
+        fscanf(file, "%d", &vector.shmem_data.ptr[i]);
+    }
+    return vector;
+}
