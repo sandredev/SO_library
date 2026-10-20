@@ -1,4 +1,4 @@
-#include "shmem.h"
+#include "../../include/shared_memory/shmem.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/shm.h>

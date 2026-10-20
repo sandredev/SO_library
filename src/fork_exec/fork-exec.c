@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include "fork-exec.h"
+#include "../../include/fork_exec/fork-exec.h"
 
 void fork_exec(const char* path, char* const argv[]) {
     pid_t pid = fork();

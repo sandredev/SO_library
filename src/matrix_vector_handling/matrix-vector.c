@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "matrix-vector.h"
+#include "../../include/matrix_vector_handling/matrix-vector.h"
 #include <sys/shm.h>
 
 LocalMatrix create_local_matrix(size_t rows, size_t cols)

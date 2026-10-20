@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include "../matrix_vector_handling/matrix-vector.h"
+#include "../../include/matrix_vector_handling/matrix-vector.h"
 #define SIZE 1024
 
 /*

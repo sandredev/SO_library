@@ -1,4 +1,4 @@
-#include "pipes.h"
+#include "../../include/pipes/pipes.h"
 #include <stdio.h>
 #include <unistd.h>
 
